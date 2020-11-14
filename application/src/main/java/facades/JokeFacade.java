@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 /**
  *
  * @author Nicklas Nielsen
+ * @author Nikolaj Larsen
  */
 public class JokeFacade {
 
@@ -64,6 +65,30 @@ public class JokeFacade {
         }
 
         return jokeDTOs;
+    }
+    
+    public JokeDTO getJoke(ExecutorService threadPool) throws FetchException {
+        String URL = "https://icanhazdadjoke.com/";
+        String joke = "joke";
+        
+        Future<JsonObject> future;
+        
+        JokeFetchHandler jfh = new JokeFetchHandler(URL, joke);
+        future = threadPool.submit(jfh);
+        
+        List<JokeDTO> jokeDTOs = new ArrayList<>();
+        
+        try {
+            JsonObject jsonObject = future.get(10, TimeUnit.SECONDS);
+            jokeDTOs.add(convertToJokeDTO(jsonObject));
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            if (e instanceof TimeoutException) {
+                throw new FetchException("Our partner did not respond when we tried to load the joke, please try again later", 503);
+            }
+
+            throw new FetchException("A system error occurred when we first loaded the joke from our partner, please contact us regarding the error, or try again later.", 500);
+        }
+        return jokeDTOs.get(0);
     }
 
     private Map<String, String> getRequestsForJokes() {
