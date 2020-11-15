@@ -44,7 +44,7 @@ public class JokeResource {
         return Response.ok(jokeDTOs).build();
     }
     
-    @GET
+        @GET
     @Path("joke")
     @RolesAllowed("User")
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,4 +52,5 @@ public class JokeResource {
         JokeDTO joke = FACADE.getJoke(THREAD_POOL);
         return Response.ok(joke).build();
     }
+
 }

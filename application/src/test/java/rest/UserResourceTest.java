@@ -18,7 +18,6 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -193,7 +192,7 @@ public class UserResourceTest {
                 .accept(ContentType.JSON)
                 .header("x-access-token", securityToken)
                 .when()
-                .get("/info/" + user).then()
+                .get("/info/user/" + user).then()
                 .statusCode(200)
                 .body("fullName", is(usersFName + " " + usersLName));
     }
@@ -210,7 +209,7 @@ public class UserResourceTest {
                 .accept(ContentType.JSON)
                 .header("x-access-token", securityToken)
                 .when()
-                .get("/info/fail").then()
+                .get("/info/user/fail").then()
                 .statusCode(400)
                 .assertThat()
                 .body("code", is(HttpStatus.BAD_REQUEST_400.getStatusCode())).and()
@@ -225,7 +224,7 @@ public class UserResourceTest {
                 .accept(ContentType.JSON)
                 .header("x-access-token", securityToken)
                 .when()
-                .get("/info/admin")
+                .get("/info/user/admin")
                 .then()
                 .statusCode(200)
                 .assertThat()
